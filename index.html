@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentPak — Marketplace</title>
+<meta name="description" content="Browse and install AI agents that run locally on your machine. No cloud, no setup, just double-click.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --surface: #141416;
+    --surface-2: #1c1c20;
+    --border: #2a2a2e;
+    --text: #e8e8e6;
+    --text-2: #a0a0a0;
+    --text-3: #606060;
+    --accent: #6c47ff;
+    --accent-glow: rgba(108, 71, 255, 0.15);
+    --green: #22c55e;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --amber: #f59e0b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    background: var(--surface-2);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+  }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 80px 24px 60px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(108,71,255,0.3);
+    border-radius: 20px;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--text-2);
+    max-width: 540px;
+    margin: 0 auto 32px;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #5a38e0; text-decoration: none; }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); text-decoration: none; }
+
+  /* How it works */
+  .how-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+  }
+  .how-section h2 {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 32px;
+    letter-spacing: -0.02em;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 640px) { .steps { grid-template-columns: 1fr; } }
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--accent-glow);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .step h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .step p { font-size: 13px; color: var(--text-2); }
+
+  /* Agents */
+  .agents-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 24px 80px;
+  }
+  .agents-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .agents-section > p {
+    color: var(--text-2);
+    margin-bottom: 24px;
+    font-size: 15px;
+  }
+  .agent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: border-color 0.15s;
+  }
+  .agent-card:hover { border-color: rgba(108,71,255,0.4); }
+  .agent-info { flex: 1; min-width: 0; }
+  .agent-name {
+    font-weight: 600;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .agent-badge {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .badge-markdown { background: rgba(34,197,94,0.15); color: var(--green); }
+  .badge-script { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .badge-project { background: rgba(168,85,247,0.15); color: var(--purple); }
+  .badge-converted { background: rgba(245,158,11,0.15); color: var(--amber); }
+  .agent-desc { font-size: 13px; color: var(--text-2); margin-bottom: 8px; }
+  .agent-meta { font-size: 12px; color: var(--text-3); display: flex; gap: 12px; }
+  .agent-meta a { color: var(--text-3); }
+  .agent-meta a:hover { color: var(--accent); }
+  .agent-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background 0.15s;
+    align-self: center;
+  }
+  .agent-dl:hover { background: #5a38e0; text-decoration: none; }
+
+  /* Developer section */
+  .dev-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    border-top: 1px solid var(--border);
+  }
+  .dev-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .dev-section > p { color: var(--text-2); margin-bottom: 24px; font-size: 15px; }
+  .dev-steps {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-2);
+    overflow-x: auto;
+  }
+  .dev-steps .comment { color: var(--text-3); }
+  .dev-steps .cmd { color: var(--green); }
+  .dev-steps .output { color: var(--text-3); font-style: italic; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 32px 24px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  footer a { color: var(--text-2); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Open source · Local-first · Zero setup</div>
+  <h1>AI agents that <span>just work</span></h1>
+  <p>Browse agents built by developers. Download a <code>.agent</code> file, double-click it, and it runs on your machine. No cloud, no terminal, no setup.</p>
+  <div class="hero-actions">
+    <a href="#agents" class="btn btn-primary">Browse Agents ↓</a>
+    <a href="https://github.com/agentpakio/agentpak/releases" class="btn btn-secondary">Download AgentPak Runtime</a>
+  </div>
+</div>
+
+<div class="how-section">
+  <h2>How it works</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Install the runtime</h3>
+      <p>One-time download. AgentPak handles Python, dependencies, and API keys automatically.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Get an agent</h3>
+      <p>Browse below, or download <code>.agent</code> files from GitHub repos, Discord, or anywhere.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Double-click to run</h3>
+      <p>The agent installs its own dependencies and starts in seconds. Use it like any app.</p>
+    </div>
+  </div>
+</div>
+
+<div class="agents-section" id="agents">
+  <h2>Agents</h2>
+  <p>Install any of these by downloading the <code>.agent</code> file and opening it with AgentPak.</p>
+
+  <div class="agent-card">
+    <div class="agent-info">
+      <div class="agent-name">
+        Code Reviewer
+        <span class="agent-badge badge-markdown">prompt</span>
+      </div>
+      <div class="agent-desc">Paste code and get expert review — bugs, security issues, performance, and style suggestions from a senior engineer perspective.</div>
+      <div class="agent-meta">
+        <span>by AgentPak</span>
+        <span>v1.0.0</span>
+        <a href="https://github.com/agentpakio/agentpak/tree/main/agents/code-reviewer">Source</a>
+      </div>
+    </div>
+    <a href="https://github.com/agentpakio/registry/releases/download/v0.1/code-reviewer-1.0.0.agent" class="agent-dl">↓ Install</a>
+  </div>
+
+  <div class="agent-card">
+    <div class="agent-info">
+      <div class="agent-name">
+        Web Researcher
+        <span class="agent-badge badge-script">script</span>
+      </div>
+      <div class="agent-desc">Research any topic — searches the web, evaluates sources, and synthesizes findings into a structured report using Claude.</div>
+      <div class="agent-meta">
+        <span>by AgentPak</span>
+        <span>v1.0.0</span>
+        <a href="https://github.com/agentpakio/agentpak/tree/main/agents/web-researcher">Source</a>
+      </div>
+    </div>
+    <a href="https://github.com/agentpakio/registry/releases/download/v0.1/web-researcher-1.0.0.agent" class="agent-dl">↓ Install</a>
+  </div>
+
+  <div class="agent-card">
+    <div class="agent-info">
+      <div class="agent-name">
+        LangGraph ReAct Agent
+        <span class="agent-badge badge-project">project</span>
+      </div>
+      <div class="agent-desc">A ReAct agent built with LangGraph that can search the web and do math calculations. Demonstrates tool-using agents.</div>
+      <div class="agent-meta">
+        <span>by AgentPak</span>
+        <span>v1.0.0</span>
+        <a href="https://github.com/agentpakio/agentpak/tree/main/agents/langgraph-react">Source</a>
+      </div>
+    </div>
+    <a href="https://github.com/agentpakio/registry/releases/download/v0.1/langgraph-react-1.0.0.agent" class="agent-dl">↓ Install</a>
+  </div>
+
+  <div class="agent-card">
+    <div class="agent-info">
+      <div class="agent-name">
+        Data Enrichment Agent
+        <span class="agent-badge badge-project">project</span>
+        <span class="agent-badge badge-converted">converted</span>
+      </div>
+      <div class="agent-desc">Give it a schema and entities — it researches each one and fills in the blanks. Converted from LangChain's official template.</div>
+      <div class="agent-meta">
+        <span>by LangChain</span>
+        <span>v1.0.0</span>
+        <a href="https://github.com/langchain-ai/data-enrichment">Original repo</a>
+      </div>
+    </div>
+    <a href="https://github.com/agentpakio/registry/releases/download/v0.1/data-enrichment-1.0.0.agent" class="agent-dl">↓ Install</a>
+  </div>
+
+  <div class="agent-card">
+    <div class="agent-info">
+      <div class="agent-name">
+        Blog Writer Crew
+        <span class="agent-badge badge-script">script</span>
+        <span class="agent-badge badge-converted">converted</span>
+      </div>
+      <div class="agent-desc">A 3-agent CrewAI crew — Content Planner, Writer, and Editor collaborate to research a topic and produce a polished blog post.</div>
+      <div class="agent-meta">
+        <span>by adihere</span>
+        <span>v1.0.0</span>
+        <a href="https://github.com/adihere/crewai_examples">Original repo</a>
+      </div>
+    </div>
+    <a href="https://github.com/agentpakio/registry/releases/download/v0.1/blog-writer-crew-1.0.0.agent" class="agent-dl">↓ Install</a>
+  </div>
+</div>
+
+<div class="dev-section">
+  <h2>For developers</h2>
+  <p>Package your existing agent in 2 minutes. No code changes needed — just add a config file.</p>
+  <div class="dev-steps">
+    <span class="comment"># Install the CLI</span><br>
+    <span class="cmd">npm install -g @agentpak/cli</span><br><br>
+    <span class="comment"># In your existing agent repo, initialize</span><br>
+    <span class="cmd">agentpak init --type project</span><br>
+    <span class="output">✓ Created agentpak.toml</span><br><br>
+    <span class="comment"># Edit the manifest (name, entry point, permissions)</span><br>
+    <span class="cmd">vim agentpak.toml</span><br><br>
+    <span class="comment"># Validate and pack</span><br>
+    <span class="cmd">agentpak validate</span><br>
+    <span class="output">✔ Valid agent configuration</span><br>
+    <span class="cmd">agentpak pack</span><br>
+    <span class="output">✔ Packed → my-agent-1.0.0.agent (12.3 KB)</span><br><br>
+    <span class="comment"># Add a badge to your README</span><br>
+    <span class="cmd">agentpak badge --repo you/your-repo --file my-agent-1.0.0.agent</span><br>
+  </div>
+</div>
+
+<footer>
+  <a href="https://github.com/agentpakio/agentpak">GitHub</a> · 
+  <a href="https://github.com/agentpakio/registry">Registry</a> · 
+  MIT License · AgentPak 2026
+</footer>
+
+</body>
+</html>
